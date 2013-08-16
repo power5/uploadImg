@@ -36,7 +36,7 @@
 	public class main extends MovieClip {
 		private const _maxWidth:Number = 291;
 		private const _maxHeight:Number = 300;
-		private const k = 3;
+		private const k = 2;
 		private const snsArr:Array = [	"http://service.weibo.com/share/share.php?appkey=48878973&url=http%3A%2F%2Fwww.iqiyi.com%2Fmarketing%2Ftoshiba.html&title=%23%D2%EC%D0%CE%C7%D6%C2%D4%23%BA%FA%D7%D3%B2%A1%B6%BE%C7%D6%CF%AE%B5%D8%C7%F2%A3%AC%BF%EC%C0%B4%BA%CD%CE%D2%D2%BB%C6%F0%BC%D3%C8%EB%B5%D8%C7%F2%B9%A5%B7%C0%D5%BD%A3%A1%B2%CE%D3%EB%BB%EE%B6%AF%D3%AE%C8%A1%BD%B1%C6%B7&content=utf-8&ralateUid=1731986465&pic=http://www.qiyipic.com/thumb/20130723/a554049_480_270.jpg",
 		"http://share.v.t.qq.com/index.php?c=share&a=index&url=http%3A%2F%2Fwww.iqiyi.com%2Fmarketing%2Ftoshiba.html&appkey=7e286cd449a84362adc6f010f63efdd7&site=http%3A%2F%2Fiqiyi.com&title=%23%D2%EC%D0%CE%C7%D6%C2%D4%23%BA%FA%D7%D3%B2%A1%B6%BE%C7%D6%CF%AE%B5%D8%C7%F2%A3%AC%BF%EC%C0%B4%BA%CD%CE%D2%D2%BB%C6%F0%BC%D3%C8%EB%B5%D8%C7%F2%B9%A5%B7%C0%D5%BD%A3%A1%B2%CE%D3%EB%BB%EE%B6%AF%D3%AE%C8%A1%BD%B1%C6%B7&pic=http://www.qiyipic.com/thumb/20130723/a554049_480_270.jpg",
 		"http://share.renren.com/share/buttonshare?link=http%3A%2F%2Fwww.iqiyi.com%2Fmarketing%2Ftoshiba.html&title=%23%D2%EC%D0%CE%C7%D6%C2%D4%23%BA%FA%D7%D3%B2%A1%B6%BE%C7%D6%CF%AE%B5%D8%C7%F2%A3%AC%BF%EC%C0%B4%BA%CD%CE%D2%D2%BB%C6%F0%BC%D3%C8%EB%B5%D8%C7%F2%B9%A5%B7%C0%D5%BD%A3%A1%B2%CE%D3%EB%BB%EE%B6%AF%D3%AE%C8%A1%BD%B1%C6%B7&pic=http://www.qiyipic.com/thumb/20130723/a554049_480_270.jpg",
@@ -105,14 +105,12 @@
 		}
 		
 		private function browseHdl(e:MouseEvent):void {
-			/**
 			_uid = ExternalInterface.call("function(){return lib.component.login.getUserInfo().uid}");
 			if(_uid == null){
 				_uid = ExternalInterface.call("loginIQiYi");
 				return;
 			}
 			trace("_uid:" + _uid);
-			*/
 			
 			_fileRef = new FileReference();
 			_fileRef.browse([_fileFilter]);
@@ -130,27 +128,24 @@
 			_loader.contentLoaderInfo.addEventListener(Event.COMPLETE, onImgLoaded);
 			_oldSize = _fileRef.data.length;
 			_loader.loadBytes(_fileRef.data);
-			trace('_oldSize:' + _oldSize);
 		}
 		
 		//显示预览图
 		private function onImgLoaded(e:Event):void {
-			//var tempBitmap:BitmapData = e.target.content;
+			gotoAndStop(2);
 			var _newBitMap:BitmapData = BitmapUtil.getZoomDraw(e.target.content, _maxWidth*k, _maxHeight*k, true);
 			var _image = new Bitmap(_newBitMap);
-			jpgUpload(_newBitMap, _path);
 			_image.scaleX = 1/k;
 			_image.scaleY = 1/k;
 			trace('image ' + _image.width);
-			gotoAndStop(2);
-
+			jpgUpload(_newBitMap, _path);
 			manager = new TransformManager();
 			//zoomIn.visible = zoomOut.visible = rotateBtn.visible = true;
 			_loading.visible = false;
 			_image.x = -145.5;
 			_image.y = -150;
 			uploadBox.imgBox.addChild(_image);
-			//uploadBox.imgBox.mask = imgMask;
+			//_newBitMap.dispose();
 			callImgFunc();
 		}
 		
@@ -307,6 +302,7 @@
 		private function jpgUpload(bt:BitmapData, url:String):void {
             var encoder:JPGEncoder = new JPGEncoder(100);
             var img:ByteArray = encoder.encode(bt);
+			//bt.dispose();
             var req:URLRequest = new URLRequest(url);
                 req.data = img;
                 req.method = URLRequestMethod.POST;
@@ -341,7 +337,7 @@
 					_pic1 = _data.data.url;
 					isFirstUpload = false;
 					_loading2.visible = false;
-					_ttttt.text = _pic1;
+					//_ttttt.text = _pic1;
 				} else {
 					trace('上传失败');
 					clearEvt();
@@ -388,7 +384,7 @@
 			_email = successBox.input2.text;
 			
 			
-			trace('uid=' + _uid +'\n name=' + _name + '\n email=' + _email + '\n pic1=' + _pic1 + '\n pic2=' + _pic2 + '\n type=' + _type);
+			//trace(_ttttt.text = 'uid=' + _uid +'\n name=' + _name + '\n email=' + _email + '\n pic1=' + _pic1 + '\n pic2=' + _pic2 + '\n type=' + _type);
             var _req:URLRequest = new URLRequest(_path2);
                 _req.method = URLRequestMethod.GET;
 
